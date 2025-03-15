@@ -24,7 +24,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
-                sh 'composer install' // Install dependensi Laravel
+                sh 'composer install --no-dev --optimize-autoloader' // Install Laravel dependencies tanpa development dependencies
                 sh 'php artisan cache:clear' // Membersihkan cache Laravel
             }
         }
@@ -44,13 +44,6 @@ pipeline {
             steps {
                 sh 'npm run build || echo "NO_BUILD"' // Jika tidak ada build, tetap lanjut
                 archiveArtifacts artifacts: 'dist/**', fingerprint: true
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                sh 'php artisan migrate --force' // Jalankan migrasi database
-                sh 'php artisan config:cache' // Optimalkan konfigurasi
             }
         }
     }
